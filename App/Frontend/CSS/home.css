@@ -1,0 +1,130 @@
+/* Import Google Font for a clean, modern look */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #0A0A0F; /* Dark base color */
+    color: #ffffff;
+    text-align: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+
+    /* Richer background gradients for the glass to interact with */
+    background-image:
+        radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.35) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(147, 197, 253, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 50% 95%, rgba(147, 197, 253, 0.15) 0%, transparent 50%);
+    background-attachment: fixed;
+}
+
+/* --- Maximum Glass Navbar --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    font-size: 18px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    /* Strong glass effect for the navbar */
+    background: rgba(10, 10, 15, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.navbar a {
+    color: #ddd;
+    margin-left: 20px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #c084fc;
+}
+
+/* --- Heading with 3D Clear/Purple-Tinted Glass Font Effect --- */
+h1 {
+    font-size: 80px;
+    font-weight: 700;
+    margin-top: 50px;
+    margin-bottom: 60px;
+    
+    /* Set the base color to a 10% purple tint, making it mostly clear */
+    color: rgba(219, 187, 251, 0.878);
+    
+    /* Layered text-shadows to create a 3D, beveled, and reflective "crystal" effect */
+    text-shadow: 
+        /* Inner shadow for a subtle inset effect */
+        1px 1px 2px rgba(0, 0, 0, 0.7),
+        
+        /* Bright top-left highlight for a sharp, reflective glint */
+        -1px -1px 1px rgba(230, 230, 255, 0.4),
+        
+        /* Main 3D depth shadow, pushed further down and right */
+        3px 5px 8px rgba(0, 0, 0, 0.6),
+        
+        /* Soft ambient glow to integrate with the background theme */
+        0 0 60px rgba(192, 132, 252, 0.25);
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+a.card-link {
+    text-decoration: none;
+}
+
+/* --- Matching Glass Card Styling --- */
+.card {
+    width: 320px;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: left;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+
+    /* Strong glass effect for cards */
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.card:hover {
+    transform: translateY(-15px) scale(1.05);
+    box-shadow: 0 20px 50px rgba(128, 90, 213, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.card h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    color: #ffffff;
+
+    background: linear-gradient(90deg, #e0c3fc, #b6d9fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c5c5d2;
+    margin-bottom: 0;
+}
