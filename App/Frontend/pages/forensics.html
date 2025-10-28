@@ -4,124 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ByteSpector - Forensics</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #0A0A0F;
-      color: #fff;
-      display: flex;
-      min-height: 100vh;
-    }
 
-    /* Sidebar */
-    .sidebar {
-      width: 250px;
-      background: #11111a;
-      border-right: 1px solid #2a2a3a;
-      padding: 20px;
-    }
-    .sidebar h2 {
-      font-size: 22px;
-      background: linear-gradient(90deg, #f472b6, #38bdf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .sidebar select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      background: #1b1b26;
-      color: #fff;
-      border: 1px solid #444;
-    }
-
-    /* Main Content */
-    .main {
-      flex: 1;
-      padding: 30px;
-    }
-    h1 {
-      text-align: center;
-      font-size: 42px;
-      margin-bottom: 20px;
-      background: linear-gradient(90deg, #f472b6, #38bdf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .file-box {
-      margin-top: 15px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid #2a2a3a;
-      padding: 20px;
-      border-radius: 10px;
-    }
-
-    textarea {
-      width: 100%;
-      height: 200px;
-      margin-top: 15px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid #2a2a3a;
-      border-radius: 10px;
-      padding: 15px;
-      color: #fff;
-      font-size: 16px;
-      resize: none;
-    }
-
-    .buttons {
-      margin-top: 20px;
-      display: flex;
-      gap: 15px;
-    }
-    button {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      background: linear-gradient(90deg, #ec4899, #22d3ee);
-      color: white;
-      transition: 0.3s;
-    }
-    button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0px 5px 15px rgba(200, 80, 160, 0.4);
-    }
-  </style>
+  <!-- Link CSS File -->
+  <link rel="stylesheet" href="../CSS/forensics.css">
 </head>
 <body>
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Forensics</h2>
-    <label>Select Tool:</label>
-    <select>
-      <option>LSB Visualizer</option>
-      <option>Magic Byte Analyzer</option>
-      <option>Metadata Extractor</option>
-    </select>
+    <h2>Forensics Tools</h2>
+    <div class="tool-list">
+      <button class="tool-btn">LSB Visualizer</button>
+      <button class="tool-btn">Magic Byte Analyzer</button>
+      <button class="tool-btn">Metadata Extractor</button>
+    </div>
   </div>
 
   <!-- Main Content -->
   <div class="main">
     <h1>Forensics Analysis Module</h1>
 
-    <div class="file-box">
-      <label>Upload File (PNG/JPG for LSB or any file for magic bytes):</label>
-      <input type="file">
+    <div class="file-upload">
+      <label for="fileInput">Upload File</label>
+      <input id="fileInput" type="file">
     </div>
 
-    <textarea placeholder="Results will appear here..."></textarea>
+    <textarea id="output" placeholder="Results will appear here..." disabled></textarea>
 
     <div class="buttons">
-      <button>Analyze</button>
-      <button style="background:#ef4444;">Clear</button>
+      <button id="analyzeBtn">Analyze</button>
+      <button id="clearBtn" class="danger">Clear</button>
     </div>
   </div>
 
+  <!-- Link JavaScript File -->
+  <script src="../JS/forensics.js"></script>
 </body>
 </html>
