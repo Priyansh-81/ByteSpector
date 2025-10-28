@@ -11,9 +11,9 @@ body {
     overflow: hidden;
 
     background-image:
-        radial-gradient(circle at 15% 20%, rgba(236, 72, 153, 0.35) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.25) 0%, transparent 40%),
-        radial-gradient(circle at 50% 95%, rgba(56, 189, 248, 0.15) 0%, transparent 50%);
+        radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.35) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(147, 197, 253, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 50% 95%, rgba(147, 197, 253, 0.15) 0%, transparent 50%);
     background-attachment: fixed;
 }
 
@@ -30,9 +30,8 @@ body {
 
 .sidebar h2 {
     font-size: 22px;
-    margin-bottom: 20px;
     text-align: center;
-    background: linear-gradient(90deg, #f472b6, #38bdf8);
+    background: linear-gradient(90deg, #e0c3fc, #b6d9fd);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -57,12 +56,12 @@ body {
 }
 
 .tool-btn:hover {
-    background: rgba(244, 114, 182, 0.35);
+    background: rgba(192,132,252,0.3);
     transform: translateX(6px);
 }
 
 .tool-btn.active {
-    background: rgba(244, 114, 182, 0.7);
+    background: rgba(192,132,252,0.6);
     color: white;
 }
 
@@ -77,16 +76,16 @@ h1 {
     text-align: center;
     font-size: 36px;
     margin-bottom: 20px;
-    background: linear-gradient(90deg, #f472b6, #38bdf8);
+    background: linear-gradient(90deg, #e0c3fc, #b6d9fd);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 /* FILE UPLOAD */
 .file-upload label {
-    display: block;
     font-size: 16px;
     margin-bottom: 8px;
+    display: block;
 }
 
 .file-upload input[type="file"] {
@@ -102,15 +101,15 @@ h1 {
 /* TEXTAREA */
 textarea {
     width: 100%;
-    height: 230px;
+    height: 240px;
     padding: 15px;
+    margin-top: 20px;
     border-radius: 14px;
     border: 1px solid rgba(255,255,255,0.25);
     background: rgba(255,255,255,0.07);
     backdrop-filter: blur(15px);
     color: #ffffff;
     font-size: 16px;
-    margin-top: 15px;
     resize: none;
     outline: none;
 }
@@ -135,7 +134,7 @@ button {
 }
 
 button:hover {
-    background: rgba(244, 114, 182, 0.55);
+    background: rgba(192, 132, 252, 0.55);
     transform: translateY(-4px);
 }
 
@@ -147,3 +146,4 @@ button.danger {
 button.danger:hover {
     background: rgba(239, 68, 68, 0.75);
 }
+s
