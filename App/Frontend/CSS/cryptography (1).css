@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* GLOBAL */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #0A0A0F;
+    color: #ffffff;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+
+    background-image:
+        radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.35) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(147, 197, 253, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 50% 95%, rgba(147, 197, 253, 0.15) 0%, transparent 50%);
+    background-attachment: fixed;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 280px;
+    padding: 25px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-right: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 6px 0 30px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.sidebar h2 {
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+    background: linear-gradient(90deg, #e0c3fc, #b6d9fd);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* TOOL BUTTONS */
+.tool-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tool-btn {
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #e3e3e9;
+    cursor: pointer;
+    font-size: 15px;
+    text-align: left;
+    transition: 0.3s ease;
+}
+
+.tool-btn:hover {
+    background: rgba(192,132,252,0.3);
+    transform: translateX(6px);
+}
+
+.tool-btn.active {
+    background: rgba(192,132,252,0.6);
+    border-color: rgba(255,255,255,0.5);
+    color: #fff;
+}
+
+/* MAIN SECTION */
+.main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* INPUT / OUTPUT BOXES */
+.io-container {
+    display: flex;
+    gap: 20px;
+}
+
+#inputText,
+#outputText {
+    width: 50%;
+    height: 600px;
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(18px);
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    font-size: 16px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+#inputText:hover,
+#outputText:hover,
+#key:hover {
+    transform: translateY(-3px);
+}
+
+/* KEY BOX (FULL WIDTH) */
+#key {
+    width: 97%;
+    height: 60px;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(18px);
+    background: rgba(255,255,255,0.07);
+    font-size: 16px;
+    color: #ffffff;
+    resize: none;
+    outline: none;
+}
+
+/* BUTTONS (FIXED AT BOTTOM) */
+.buttons {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+}
+
+.buttons button {
+    padding: 14px 32px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.28);
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    transition: 0.35s ease;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.35);
+}
+
+.buttons button:hover {
+    background: rgba(192, 132, 252, 0.55);
+    box-shadow: 0 12px 40px rgba(192, 132, 252, 0.45);
+    transform: translateY(-4px);
+}
+
+/* CLEAR BUTTON (RED) */
+#clearBtn {
+    background: rgba(239, 68, 68, 0.35);
+    border-color: rgba(239, 68, 68, 0.6);
+}
+
+#clearBtn:hover {
+    background: rgba(239, 68, 68, 0.75);
+    box-shadow: 0 12px 40px rgba(239, 68, 68, 0.55);
+}
+.tool-btn.active {
+  background-color: #007bff;
+  font-weight: bold;
+}
+/* RADIO BUTTON STYLE FOR SIDEBAR */
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #e3e3e9;
+  transition: 0.3s ease;
+  font-size: 15px;
+}
+
+.radio-option:hover {
+  background: rgba(192, 132, 252, 0.35);
+  transform: translateX(6px);
+}
+
+.radio-option input[type="radio"] {
+  accent-color: #c084fc; /* Purple stylish accent */
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+/* LAYOUT FIX */
+body {
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  background-color: #0A0A0F;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Sidebar Layout Fix */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: #11111a;
+  padding: 20px;
+  border-right: 1px solid #2a2a3a;
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.main {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  padding: 30px;
+  box-sizing: border-box;
+}
