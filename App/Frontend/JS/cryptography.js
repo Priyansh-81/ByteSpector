@@ -46,7 +46,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tool === "caesar") {
       endpoint = `${API_BASE_URL}/Ceaser/${action}`;
       payload = { [textKey]: text, key: parseInt(key) };
-    } else {
+    }else if(tool === "multiplicative"){
+      endpoint=`${API_BASE_URL}/Multiplicative/${action}`;
+      payload = { [textKey]: text, key: parseInt(key) };
+    }else if(tool === "Affine"){
+      endpoint = `${API_BASE_URL}/Affine/${action}`;
+      payload = { [textKey]: text, key: parseInt(key) };
+    }else if(tool === "Autokey") {
+      endpoint = `${API_BASE_URL}/Autokey/${action}`;
+      payload = { [textKey]: text, key: parseInt(key) };
+    }
+    else {
       outputText.value = "Error: Tool not supported yet.";
       return;
     }
