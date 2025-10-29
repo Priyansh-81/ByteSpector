@@ -92,7 +92,7 @@ def MulDecrypt():
     return jsonify({"pt": result})
 
 # Affine
-@app.route("/api/symmetric/Affine/Encrypt", methods=["POST"])
+@app.route("/api/symmetric/Affine/encrypt", methods=["POST"])
 def AffineEncrypt():
     data = request.json
     pt = data.get("pt", "")
@@ -109,7 +109,7 @@ def AffineEncrypt():
             result += ch
     return jsonify({"ct": result})
 
-@app.route("/api/symmetric/Affine/Decrypt", methods=["POST"])
+@app.route("/api/symmetric/Affine/crypt", methods=["POST"])
 def AffineDecrypt():
     data = request.json
     ct = data.get("ct", "")
