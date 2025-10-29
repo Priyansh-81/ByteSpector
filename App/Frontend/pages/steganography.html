@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteSpector - Steganography</title>
+  <link rel="stylesheet" href="C:\Users\Yukti Bhatia\Downloads\bytespector\steganography.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Steganography Tools</h2>
+    <div class="tool-list">
+      <button class="tool-btn">Embed Message</button>
+      <button class="tool-btn">Extract Message</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <h1>Steganography Module</h1>
+
+    <div class="file-upload">
+      <label for="imageInput">Upload Image (PNG/JPG):</label>
+      <input id="imageInput" type="file" accept="image/*">
+    </div>
+
+    <textarea id="messageBox" placeholder="Enter your secret message here or view extracted message..."></textarea>
+
+    <div class="buttons">
+      <button id="embedBtn">Embed</button>
+      <button id="extractBtn">Extract</button>
+      <button id="clearBtn" class="danger">Clear</button>
+    </div>
+  </div>
+
+  <script src="C:\Users\Yukti Bhatia\Downloads\bytespector\steganography.js"></script>
+</body>
+</html>
