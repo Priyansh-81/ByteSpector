@@ -13,14 +13,11 @@ from Crypto.PublicKey import RSA, ECC
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Signature import DSS
 from Crypto.Hash import SHA256
-from Crypto.Random import get_random_bytes
 import base64
-from tinyec import registry
 import exifread
 import os
 import binascii
-from Crypto.Util import number
-import random
+
 
 app = Flask(__name__)
 CORS(app)
@@ -364,10 +361,7 @@ def multiply_matrix_vector(matrix, vector):
         result.append(val)
     return result
 
-# -----------------------------
-# Hill Cipher Routes
-# -----------------------------
-
+#hill cipher
 @app.route('/api/symmetric/Hill/encrypt', methods=['POST'])
 def hill_encrypt():
     data = request.get_json()
