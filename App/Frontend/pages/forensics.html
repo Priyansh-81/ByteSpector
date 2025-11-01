@@ -4,22 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ByteSpector - Forensics</title>
-
-  <!-- Link CSS File -->
   <link rel="stylesheet" href="../CSS/forensics.css">
 </head>
+<body>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>Forensics Tools</h2>
-    <div class="tool-list">
-      <button class="tool-btn">LSB Visualizer</button>
-      <button class="tool-btn">Magic Byte Analyzer</button>
-      <button class="tool-btn">Metadata Extractor</button>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div><strong style="color:#c084fc;">ByteSpector</strong></div>
+    <div>
+      <a href="../home (1).html">Home</a>
+      <a href="#">About</a>
     </div>
   </div>
 
-  <!-- Main Content -->
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Forensics Tools</h2>
+
+    <div class="tool-list">
+      <label class="radio-option">
+        <input type="radio" name="forensics-option" value="lsb" checked>
+        LSB Visualizer
+      </label>
+
+      <label class="radio-option">
+        <input type="radio" name="forensics-option" value="magic-byte">
+        Magic Byte Analyzer
+      </label>
+
+      <label class="radio-option">
+        <input type="radio" name="forensics-option" value="metadata">
+        Metadata Extractor
+      </label>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
   <div class="main">
     <h1>Forensics Analysis Module</h1>
 
@@ -36,7 +56,6 @@
     </div>
   </div>
 
-  <!-- Link JavaScript File -->
   <script src="../JS/forensics.js"></script>
 </body>
 </html>

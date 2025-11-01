@@ -1,90 +1,85 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // --- DOM Elements ---
-  const toolButtons = document.querySelectorAll(".tool-btn");
-  const fileInput = document.getElementById("imageInput");
-  const messageBox = document.getElementById("messageBox");
-  const embedBtn = document.getElementById("embedBtn");
-  const extractBtn = document.getElementById("extractBtn");
-  const clearBtn = document.getElementById("clearBtn");
+// === ByteSpector Steganography Frontend ===
 
-  // --- State ---
-  let currentTool = "Embed Message"; // Default tool
-  const API_BASE_URL = "http://127.0.0.1:5000/api/steganography";
+// Flask backend API base URL
+const API_BASE = "http://127.0.0.1:5000/api/stego";
 
-  // --- Functions ---
+// DOM elements
+const imageInput = document.getElementById("imageInput");
+const messageBox = document.getElementById("messageBox");
+const startBtn = document.getElementById("startbtn");
+const clearBtn = document.getElementById("clearBtn");
 
-  // Highlight active tool button
-  function setActiveTool(e) {
-    toolButtons.forEach(btn => btn.classList.remove("active"));
-    e.target.classList.add("active");
-    currentTool = e.target.textContent;
+// === START BUTTON CLICK ===
+startBtn.addEventListener("click", async () => {
+  const file = imageInput.files[0];
+  const selectedOption = document.querySelector('input[name="stego-option"]:checked').value;
+
+  if (!file) {
+    alert("Please select an image file first!");
+    return;
   }
 
-  // Clear fields
-  function clearFields() {
-    fileInput.value = "";
-    messageBox.value = "";
-  }
-
-  // Handle Embed or Extract API
-  async function handleSteganography(action) {
-    const file = fileInput.files[0];
-    let endpoint = "";
-    let formData = new FormData();
-
-    if (!file) {
-      alert("Please upload an image file first!");
+  if (selectedOption === "embed") {
+    const secret = messageBox.value.trim();
+    if (!secret) {
+      alert("Please enter a secret message to embed!");
       return;
     }
 
-    if (action === "embed") {
-      if (!messageBox.value.trim()) {
-        alert("Please enter a message to embed!");
-        return;
-      }
-      endpoint = `${API_BASE_URL}/embed`;
-      formData.append("image", file);
-      formData.append("message", messageBox.value);
-
-    } else if (action === "extract") {
-      endpoint = `${API_BASE_URL}/extract`;
-      formData.append("image", file);
-    }
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("secret", secret);
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${API_BASE}/embed`, {
         method: "POST",
-        body: formData
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert("Error: " + (err.error || "Embedding failed."));
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "stego_output.png";
+      a.click();
+      URL.revokeObjectURL(url);
+
+      alert("✅ Message embedded successfully! File downloaded as stego_output.png");
+    } catch (error) {
+      alert("❌ Connection error: " + error.message);
+    }
+
+  } else if (selectedOption === "extract") {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(`${API_BASE}/extract`, {
+        method: "POST",
+        body: formData,
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        messageBox.value = `Error: ${data.error || "Unknown server error"}`;
-      } else {
-        messageBox.value =
-          action === "extract"
-            ? data.message
-            : "✅ Message successfully embedded in image!";
+      if (data.error) {
+        alert("Error: " + data.error);
+        return;
       }
 
+      messageBox.value = data.secret || "(No hidden message found)";
     } catch (error) {
-      console.error("Fetch error:", error);
-      messageBox.value = "Error: Server did not respond.";
+      alert("❌ Connection error: " + error.message);
     }
   }
+});
 
-  // --- Event Listeners ---
-  toolButtons.forEach(button => {
-    button.addEventListener("click", setActiveTool);
-  });
-
-  embedBtn.addEventListener("click", () => handleSteganography("embed"));
-  extractBtn.addEventListener("click", () => handleSteganography("extract"));
-  clearBtn.addEventListener("click", clearFields);
-
-  // Activate first tool by default
-  if (toolButtons.length > 0) {
-    toolButtons[0].classList.add("active");
-  }
+// === CLEAR BUTTON ===
+clearBtn.addEventListener("click", () => {
+  imageInput.value = "";
+  messageBox.value = "";
 });

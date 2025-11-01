@@ -2,148 +2,246 @@
 
 /* GLOBAL */
 body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #0A0A0F;
-    color: #ffffff;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #0A0A0F;
+  color: #ffffff;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 
-    background-image:
-        radial-gradient(circle at 15% 20%, rgba(236, 72, 153, 0.35) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.25) 0%, transparent 40%),
-        radial-gradient(circle at 50% 95%, rgba(56, 189, 248, 0.15) 0%, transparent 50%);
-    background-attachment: fixed;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.35) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(147, 197, 253, 0.25) 0%, transparent 40%),
+    radial-gradient(circle at 50% 95%, rgba(147, 197, 253, 0.15) 0%, transparent 50%);
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
+
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  border-radius: 2px;
+  top: 0;
+  left: 0;
+  right: 0; /* ensures it aligns perfectly with both edges */
+  width: auto; /* instead of 100% — lets left/right take priority */
+  z-index: 200;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 50px;
+  font-size: 18px;
+
+  /* Glass effect */
+  background: rgba(10, 10, 15, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+  box-sizing: border-box; /* important: includes padding in total width */
+  overflow-x: hidden; /* prevent minor overflow glow */
+}
+
+.navbar a {
+  color: #ddd;
+  margin-left: 20px;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #fff;
+}
+
+/* Optional glow underline effect for navbar links */
+.navbar a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #c084fc, #60a5fa);
+  transition: width 0.3s ease;
+}
+
+.navbar a:hover::after {
+  width: 100%;
+}
+
+/*
 
 /* SIDEBAR */
 .sidebar {
-    width: 280px;
-    padding: 25px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border-right: 1px solid rgba(255,255,255,0.18);
-    box-shadow: 6px 0 30px rgba(0,0,0,0.4);
+  width: 260px;
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-right: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 6px 0 30px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  padding: 25px 20px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 70px; /* offset to leave space for navbar */
+  left: 0;
 }
 
 .sidebar h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
-    text-align: center;
-    background: linear-gradient(90deg, #f472b6, #38bdf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  font-size: 22px;
+  margin-bottom: 25px;
+  text-align: center;
+  background: linear-gradient(90deg, #e0c3fc, #b6d9fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* TOOL BUTTONS */
+/* RADIO BUTTONS */
 .tool-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.tool-btn {
-    padding: 14px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: #e3e3e9;
-    cursor: pointer;
-    font-size: 15px;
-    text-align: left;
-    transition: 0.3s ease;
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #e3e3e9;
+  transition: 0.3s ease;
+  font-size: 15px;
 }
 
-.tool-btn:hover {
-    background: rgba(244, 114, 182, 0.35);
-    transform: translateX(6px);
+.radio-option:hover {
+  background: rgba(192, 132, 252, 0.35);
+  transform: translateX(6px);
 }
 
-.tool-btn.active {
-    background: rgba(244, 114, 182, 0.7);
-    color: white;
+.radio-option input[type="radio"] {
+  accent-color: #c084fc;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 /* MAIN CONTENT */
 .main {
-    flex: 1;
-    padding: 40px;
-    overflow-y: auto;
+  margin-left: 260px;
+  padding: 120px 40px 40px; /* extra top padding for navbar space */
+  width: calc(100% - 260px);
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
-h1 {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #f472b6, #38bdf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.main h1 {
+  font-size: 26px;
+  margin-bottom: 30px;
+  color: #e2e2f7;
 }
 
 /* FILE UPLOAD */
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
 .file-upload label {
-    display: block;
-    font-size: 16px;
-    margin-bottom: 8px;
+  background: rgba(255,255,255,0.08);
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.file-upload label:hover {
+  background: rgba(192,132,252,0.45);
 }
 
 .file-upload input[type="file"] {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: #fff;
-    backdrop-filter: blur(12px);
+  display: none;
 }
 
-/* TEXTAREA */
-textarea {
-    width: 100%;
-    height: 230px;
-    padding: 15px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.25);
-    background: rgba(255,255,255,0.07);
-    backdrop-filter: blur(15px);
-    color: #ffffff;
-    font-size: 16px;
-    margin-top: 15px;
-    resize: none;
-    outline: none;
+/* OUTPUT BOX */
+#output {
+  width: 97%;
+  height: 400px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(18px);
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  font-size: 15px;
+  resize: vertical;
+  outline: none;
+  margin-bottom: 25px;
 }
 
 /* BUTTONS */
 .buttons {
-    margin-top: 25px;
-    display: flex;
-    gap: 15px;
+  position: fixed; /* Fix it to the bottom of the viewport */
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  z-index: 150;
 }
 
-button {
-    padding: 14px 32px;
-    border-radius: 15px;
-    border: 1px solid rgba(255,255,255,0.28);
-    background: rgba(255,255,255,0.08);
-    cursor: pointer;
-    font-size: 16px;
-    color: #ffffff;
-    transition: 0.35s ease;
-    backdrop-filter: blur(15px);
+.buttons button {
+  padding: 14px 32px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  cursor: pointer;
+  font-size: 16px;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  transition: 0.35s ease;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.35);
 }
 
-button:hover {
-    background: rgba(244, 114, 182, 0.55);
-    transform: translateY(-4px);
+.buttons button:hover {
+  background: rgba(192, 132, 252, 0.55);
+  box-shadow: 0 12px 40px rgba(192, 132, 252, 0.45);
+  transform: translateY(-4px);
 }
 
-button.danger {
-    background: rgba(239, 68, 68, 0.35);
-    border-color: rgba(239, 68, 68, 0.6);
+#clearBtn {
+  background: rgba(239, 68, 68, 0.35);
+  border-color: rgba(239, 68, 68, 0.6);
 }
 
-button.danger:hover {
-    background: rgba(239, 68, 68, 0.75);
+#clearBtn:hover {
+  background: rgba(239, 68, 68, 0.75);
+  box-shadow: 0 12px 40px rgba(239, 68, 68, 0.55);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 900px) {
+  .buttons {
+    position: static;
+    transform: none;
+    justify-content: center;
+    margin-top: 40px;
+  }
 }

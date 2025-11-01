@@ -8,86 +8,82 @@
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>Cryptography Tools</h2>
+  <!-- ===== Navbar ===== -->
+  <div class="navbar">
+    <div><strong style="color:#c084fc;">ByteSpector</strong></div>
+    <div>
+      <a href="../home (1).html">Home</a>
+      <a href="#">About</a>
+    </div>
+  </div>
+
+  <!-- ===== Content area (Sidebar + Main) ===== -->
+  <div class="content">
+
+    <!-- Sidebar -->
     <div class="sidebar">
-  <h2>Cryptography Tools</h2>
+      <h2>Cryptography Tools</h2>
+      <div class="tool-list">
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="caesar" checked>
+          Caesar Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="multiplicative">
+          Multiplicative Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="affine">
+          Affine Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="Autokey">
+          Autokey Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="vigenere">
+          Vigenere Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="playfair">
+          Playfair Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="hill">
+          Hill Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="b64">
+          Base64 Cipher
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="dsa">
+          DSA
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="crypto-option" value="rsa">
+          RSA
+        </label>
+      </div>
+    </div>
 
-  <div class="tool-list">
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="caesar" checked>
-      Caesar Cipher
-    </label>
+    <!-- Main Content -->
+    <div class="main">
+      <div class="io-container">
+        <textarea id="inputText" placeholder="Enter your input here..."></textarea>
+        <textarea id="outputText" placeholder="Output will appear here..." disabled></textarea>
+      </div>
 
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="multiplicative">
-      Multiplicative Cipher
-    </label>
+      <textarea id="key" placeholder="Enter the key..."></textarea>
 
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="affine">
-      Affine Cipher
-    </label>
-
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="Autokey">
-      Autokey Cipher
-    </label>
-
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="vigenere">
-      Vigenere Cipher
-    </label>
-
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="playfair">
-      Playfair Cipher
-    </label>
-
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="hill">
-      Hill Cipher
-    </label>
-
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="b64">
-      Base64 Cipher
-    </label>
-
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="dsa">
-      DSA
-    </label>
-
-    <label class="radio-option">
-      <input type="radio" name="crypto-option" value="rsa">
-      RSA
-    </label>
-
-  </div>
-</div>
-
-  </div>
-
-  <!-- Main Content -->
-  <div class="main">
-
-  <div class="io-container">
-    <textarea id="inputText" placeholder="Enter your input here..."></textarea>
-    <textarea id="outputText" placeholder="Output will appear here..." disabled></textarea>
+      <div class="buttons">
+        <button id="encryptBtn">Encrypt</button>
+        <button id="decryptBtn">Decrypt</button>
+        <button id="clearBtn">Clear</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Key input field (now full width) -->
-  <textarea id="key" placeholder="Enter the key..."></textarea>
-
-  <div class="buttons">
-    <button id="encryptBtn">Encrypt</button>
-    <button id="decryptBtn">Decrypt</button>
-    <button id="clearBtn">Clear</button>
-  </div>
-
-</div>
- <script src="../JS/cryptography.js"></script>
+  <script src="../JS/cryptography.js"></script>
 </body>
 </html>

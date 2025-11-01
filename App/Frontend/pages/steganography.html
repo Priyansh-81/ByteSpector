@@ -8,31 +8,51 @@
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>Steganography Tools</h2>
-    <div class="tool-list">
-      <button class="tool-btn">Embed Message</button>
-      <button class="tool-btn">Extract Message</button>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div><strong style="color:#c084fc;">ByteSpector</strong></div>
+    <div>
+      <a href="../home (1).html">Home</a>
+      <a href="#">About</a>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div class="main">
-    <h1>Steganography Module</h1>
+  <!-- MAIN CONTENT WRAPPER -->
+  <div class="content">
 
-    <div class="file-upload">
-      <label for="imageInput">Upload Image (PNG/JPG):</label>
-      <input id="imageInput" type="file" accept="image/*">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>Steganography Tools</h2>
+      <div class="tool-list">
+        <label class="radio-option">
+          <input type="radio" name="stego-option" value="embed" checked>
+          Embed Message
+        </label>
+
+        <label class="radio-option">
+          <input type="radio" name="stego-option" value="extract">
+          Extract Message
+        </label>
+      </div>
     </div>
 
-    <textarea id="messageBox" placeholder="Enter your secret message here or view extracted message..."></textarea>
+    <!-- MAIN AREA -->
+    <div class="main">
+      <h1>Steganography Module</h1>
 
-    <div class="buttons">
-      <button id="embedBtn">Embed</button>
-      <button id="extractBtn">Extract</button>
-      <button id="clearBtn" class="danger">Clear</button>
+      <div class="file-upload">
+        <label for="imageInput">Upload Image (PNG/JPG):</label>
+        <input id="imageInput" type="file" accept="image/*">
+      </div>
+
+      <textarea id="messageBox" placeholder="Enter your secret message here or view extracted message..."></textarea>
+
+      <div class="buttons">
+        <button id="startbtn">Start</button>
+        <button id="clearBtn" class="danger">Clear</button>
+      </div>
     </div>
+
   </div>
 
   <script src="../JS/steganography.js"></script>
