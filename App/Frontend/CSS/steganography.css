@@ -177,6 +177,61 @@ body {
   display: none;
 }
 
+/* === UPLOAD STATUS === */
+.status {
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-align: center;
+  color: #888;
+}
+
+.status.success {
+  color: #4caf50;
+}
+
+.status.loading {
+  color: #ff9800;
+}
+
+/* === IMAGE PREVIEW === */
+.image-preview {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 15px;
+  width: 80%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.image-preview:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.35);
+}
+
+.image-preview img {
+  display: none;
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: 10px;
+  object-fit: cover;
+  transition: 0.3s ease;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* === TEXTAREA === */
 #messageBox {
   width: 97%;
@@ -196,6 +251,26 @@ body {
 
 #messageBox:hover {
   transform: translateY(-3px);
+}
+
+/* === SPINNER === */
+.spinner {
+  margin: 20px auto;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #7c3aed;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* === BUTTONS === */
@@ -263,4 +338,28 @@ body {
   #messageBox {
     height: 180px;
   }
+
+  .image-preview {
+    width: 90%;
+    max-width: 300px;
+  }
+}
+
+/* === SPACING ADJUSTMENTS === */
+.file-upload {
+  margin-bottom: 30px; /* More space below upload area */
+}
+
+.image-preview {
+  margin-top: 10px;
+  margin-bottom: 35px; /* Adds gap before the message box */
+}
+
+#messageBox {
+  margin-top: 10px;
+  margin-bottom: 60px; /* Space before Start/Clear buttons */
+}
+
+.hidden {
+  display: none;
 }

@@ -4,13 +4,12 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background-color: #0A0A0F; /* Dark base color */
+    background-color: #0A0A0F;
     color: #ffffff;
     text-align: center;
     min-height: 100vh;
     overflow-x: hidden;
 
-    /* Richer background gradients for the glass to interact with */
     background-image:
         radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.35) 0%, transparent 40%),
         radial-gradient(circle at 85% 80%, rgba(147, 197, 253, 0.25) 0%, transparent 40%),
@@ -18,84 +17,119 @@ body {
     background-attachment: fixed;
 }
 
-/* --- Maximum Glass Navbar --- */
+/* --- NAVBAR --- */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 50px;
-    font-size: 18px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 50px;
+  font-size: 18px;
 
-    /* Strong glass effect for the navbar */
-    background: rgba(10, 10, 15, 0.2);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(10, 10, 15, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .navbar a {
-    color: #ddd;
-    margin-left: 20px;
-    text-decoration: none;
-    transition: color 0.3s ease;
+  color: #ddd;
+  margin-left: 20px;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
 }
 
 .navbar a:hover {
-    color: #c084fc;
+  color: #fff;
 }
 
-/* --- Heading with 3D Clear/Purple-Tinted Glass Font Effect --- */
+.navbar a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #c084fc, #60a5fa);
+  transition: width 0.3s ease;
+}
+
+.navbar a:hover::after {
+  width: 100%;
+}
+
+/* --- TITLE --- */
 h1 {
-    font-size: 80px;
-    font-weight: 700;
-    margin-top: 50px;
-    margin-bottom: 60px;
-    
-    /* Set the base color to a 10% purple tint, making it mostly clear */
-    color: rgba(219, 187, 251, 0.878);
-    
-    /* Layered text-shadows to create a 3D, beveled, and reflective "crystal" effect */
-    text-shadow: 
-        /* Inner shadow for a subtle inset effect */
-        1px 1px 2px rgba(0, 0, 0, 0.7),
-        
-        /* Bright top-left highlight for a sharp, reflective glint */
-        -1px -1px 1px rgba(230, 230, 255, 0.4),
-        
-        /* Main 3D depth shadow, pushed further down and right */
-        3px 5px 8px rgba(0, 0, 0, 0.6),
-        
-        /* Soft ambient glow to integrate with the background theme */
-        0 0 60px rgba(192, 132, 252, 0.25);
+    font-size: 200px;
+    font-weight: 800;
+    margin-top: 200px;
+    margin-bottom: 160px;
+    letter-spacing: 6px;
+    line-height: 1.1;
+
+    background: linear-gradient(90deg, #c084fc, #60a5fa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        3px 3px 8px rgb(64, 5, 82),
+        0 0 35px rgba(192, 132, 252, 0.5),
+        0 0 100px rgba(147, 197, 253, 0.35);
+
+    animation: glowPulse 3s infinite alternate ease-in-out;
 }
 
+@keyframes glowPulse {
+  from {
+    text-shadow:
+      3px 3px 8px rgba(0, 0, 0, 0.8),
+      0 0 30px rgba(192, 132, 252, 0.4),
+      0 0 70px rgba(147, 197, 253, 0.2);
+  }
+  to {
+    text-shadow:
+      3px 3px 8px rgba(0, 0, 0, 0.8),
+      0 0 60px rgba(192, 132, 252, 0.7),
+      0 0 130px rgba(147, 197, 253, 0.4);
+  }
+}
+
+/* --- CONTAINER --- */
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: auto;
-    padding: 0 20px;
+    padding-bottom: 120px;
+
     display: flex;
     justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 80px;
+    flex-wrap: nowrap;
 }
 
+/* --- CARDS --- */
 a.card-link {
     text-decoration: none;
 }
 
-/* --- Matching Glass Card Styling --- */
 .card {
-    width: 320px;
-    padding: 30px;
-    border-radius: 20px;
-    text-align: left;
+    width: 360px;
+    height: 200px;
+    padding: 45px 35px;
+    border-radius: 28px;
+    text-align: center;
+    cursor: pointer;
     transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
 
-    /* Strong glass effect for cards */
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(255, 255, 255, 0.25);
@@ -103,22 +137,22 @@ a.card-link {
 }
 
 .card:hover {
-    transform: translateY(-15px) scale(1.05);
-    box-shadow: 0 20px 50px rgba(128, 90, 213, 0.5);
+    transform: translateY(-20px) scale(1.1);
+    box-shadow: 0 30px 70px rgba(128, 90, 213, 0.55);
     border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .card h2 {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 600;
     margin-top: 0;
     margin-bottom: 15px;
-    letter-spacing: 1px;
-    color: #ffffff;
-
+    text-transform: uppercase;
     background: linear-gradient(90deg, #e0c3fc, #b6d9fd);
-    -webkit-background-clip: text;
     background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
     -webkit-text-fill-color: transparent;
 }
 
@@ -127,4 +161,30 @@ a.card-link {
     line-height: 1.7;
     color: #c5c5d2;
     margin-bottom: 0;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 1100px) {
+  h1 {
+    font-size: 110px;
+    margin-top: 150px;
+  }
+
+  .container {
+    flex-wrap: wrap;
+    gap: 50px;
+  }
+}
+
+@media (max-width: 700px) {
+  h1 {
+    font-size: 80px;
+    letter-spacing: 2px;
+  }
+
+  .card {
+    width: 300px;
+    height: auto;
+    padding: 35px 25px;
+  }
 }

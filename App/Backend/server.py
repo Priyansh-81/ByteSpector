@@ -9,7 +9,9 @@ import numpy as np
 from PIL import Image
 from Crypto.Cipher import DES, AES
 from Crypto.Util.Padding import pad, unpad
-
+import exifread
+import os
+import binascii
 
 app = Flask(__name__)
 CORS(app)
@@ -488,9 +490,11 @@ def stego_embed():
         buf = io.BytesIO()
         out_img.save(buf, format='PNG')
         buf.seek(0)
-        return send_file(buf, mimetype='image/png', as_attachment=True, attachment_filename='stego_output.png')
+        # ✅ updated line for Flask 2.3+
+        return send_file(buf, mimetype='image/png', as_attachment=True, download_name='stego_output.png')
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 @app.route("/api/stego/extract", methods=["POST"])
 def stego_extract():
@@ -506,30 +510,195 @@ def stego_extract():
 
 # Forensic utilities
 
+#LSB Visualizer
 @app.route("/api/forensic/lsb_visualize", methods=["POST"])
 def lsb_visualize():
-    if 'image' not in request.files:
-        return jsonify({"error": "image file is required (field name 'image')"}), 400
-    file = request.files['image']
+    if 'file' not in request.files:  # 👈 ensure the field name matches frontend
+        return jsonify({"error": "Image file required (field name 'file')"}), 400
+
+    file = request.files['file']
+
     try:
         img = Image.open(file.stream).convert('RGB')
         arr = np.array(img)
-        lsb = (arr & 1) * 255
+
+        # Extract least significant bit of each RGB channel
+        lsb = (arr & 1) * 255  # produces black/white pattern of hidden bits
         out_img = Image.fromarray(lsb.astype(np.uint8))
+
+        # Save to buffer
         buf = io.BytesIO()
         out_img.save(buf, format='PNG')
         buf.seek(0)
-        return send_file(buf, mimetype='image/png', as_attachment=True, attachment_filename='lsb_visual.png')
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
 
-@app.route("/api/forensic/magic", methods=["POST"])
+        return send_file(
+            buf,
+            mimetype='image/png',
+            as_attachment=True,
+            download_name='lsb_visualized.png'
+        )
+
+    except Exception as e:
+        return jsonify({"error": f"LSB Visualization failed: {str(e)}"}), 500
+
+
+# Magic Byte Analyzer
+@app.route("/api/forensic/magic_analyze", methods=["POST"])
 def magic_analyze():
     if 'file' not in request.files:
-        return jsonify({"error": "file required (field name 'file')"}), 400
+        return jsonify({"error": "Image file required (field name 'file')"}), 400
+
     file = request.files['file']
-    header = file.read(16)
-    return jsonify({"magic_bytes_hex": header.hex().upper()})
+    file_bytes = file.read(16)  # read first 16 bytes (enough for most headers)
+    file.seek(0)
+
+    try:
+        magic_bytes_hex = binascii.hexlify(file_bytes).decode("utf-8").upper()
+
+        # --- Magic byte signatures ---
+        signatures = {
+             # --- Image Formats ---
+            "FFD8FF": "JPEG image",
+            "89504E47": "PNG image",
+            "47494638": "GIF image",
+            "424D": "BMP image",
+            "49492A00": "TIFF image (Little Endian)",
+            "4D4D002A": "TIFF image (Big Endian)",
+            "38425053": "PSD (Photoshop Document)",
+            "52494646": "WEBP or AVI (depends on bytes 8-11)",
+            "00000100": "ICO (Icon)",
+            "00000200": "CUR (Cursor Icon)",
+
+            # --- Document Formats ---
+            "25504446": "PDF document",
+            "D0CF11E0A1B11AE1": "Microsoft Office (DOC, XLS, PPT - pre-2007)",
+            "504B0304": "ZIP Archive / OOXML (DOCX, PPTX, XLSX, ODT, ODP)",
+            "7573746172": "TAR archive (ustar)",
+            "7B5C727466": "RTF document",
+            "3C3F786D6C": "XML document",
+            "68746D6C3E": "HTML document",
+            "EFBBBF": "UTF-8 BOM text file",
+
+            # --- Audio Formats ---
+            "494433": "MP3 audio",
+            "FFFB": "MP3 audio (no ID3 tag)",
+            "4F676753": "OGG audio",
+            "664C6143": "FLAC audio",
+            "52494646": "WAV audio / AVI / WEBP (RIFF format)",
+            "3026B2758E66CF11": "WMA/WMV (ASF container)",
+            "664C6143": "FLAC audio",
+            "2E736E64": "AU audio file",
+
+            # --- Video Formats ---
+            "000001BA": "MPEG video stream",
+            "000001B3": "MPEG video file",
+            "1A45DFA3": "MKV / WebM video",
+            "0000001866747970": "MP4 video",
+            "66747970": "MP4 / QuickTime / MOV",
+            "3026B2758E66CF11": "WMV / WMA / ASF (Microsoft media container)",
+            "4F676753": "OGG / OGV video",
+            "52494646": "AVI video / WAV audio / WEBP image",
+
+            # --- Archive / Compression Formats ---
+            "504B0304": "ZIP archive / DOCX / XLSX / JAR / APK / ODT",
+            "52617221": "RAR archive",
+            "1F8B08": "GZIP compressed archive",
+            "425A68": "BZIP2 compressed archive",
+            "FD377A585A00": "XZ compressed archive",
+            "377ABCAF271C": "7-Zip archive",
+            "7573746172": "TAR archive",
+            "7801": "ZLIB compressed data",
+            "7809": "ZLIB compressed data",
+
+            # --- Executables / System Files ---
+            "4D5A": "Windows EXE or DLL (MZ header)",
+            "7F454C46": "ELF executable (Linux/Unix)",
+            "CFFAEDFE": "Mach-O executable (macOS)",
+            "FEEDFACE": "Mach-O (32-bit)",
+            "FEEDFACF": "Mach-O (64-bit)",
+            "CAFEBABE": "Java class file / Mach-O (Universal)",
+            "CAFED00D": "Java class (old format)",
+            "7B0D0A6F626A": "Binary property list (.plist)",
+            "23215F": "Unix script (#!shebang)",
+            "23215521": "Unix script (#! /bin/sh)",
+
+            # --- Fonts ---
+            "00010000": "TrueType font (TTF)",
+            "4F54544F": "OpenType font (OTF)",
+            "74727565": "WOFF font (Web Open Font Format)",
+            "774F4646": "WOFF2 font (Web Open Font Format 2.0)",
+
+            # --- Disk / Image Files ---
+            "EB3C90": "DOS/MBR Boot sector",
+            "EB5890": "FAT filesystem image",
+            "4D534346": "Cabinet archive (Microsoft .CAB)",
+            "4344303031": "ISO CD-ROM image",
+            "4D534346": "Microsoft Cabinet file",
+
+            # --- Database / Misc ---
+            "53514C69746520666F726D6174203300": "SQLite 3 Database",
+            "000100005374616E64617264204A6574204442": "Standard Jet DB (MS Access)",
+            "4A4152435300": "JARCS archive",
+            "0000000C6A502020": "JPEG2000 image",
+
+            # --- Scripts / Code Files ---
+            "3C21444F4354": "HTML document",
+            "23212F7573722F62696E2F656E76": "Shell script",
+            "23212F7573722F62696E2F707974686F6E": "Python script",
+            "23212F62696E2F7368": "Shell script",
+            "2F2A2A": "C/C++ source file (comment header)",
+        }
+
+        detected_type = "Unknown"
+        for magic, ftype in signatures.items():
+            if magic_bytes_hex.startswith(magic):
+                detected_type = ftype
+                break
+
+        return jsonify({
+            "detected_type": detected_type,
+            "magic_bytes_hex": magic_bytes_hex
+        })
+
+    except Exception as e:
+        return jsonify({"error": f"Magic byte analysis failed: {str(e)}"}), 500
+
+#metadata
+@app.route("/api/forensic/metadata_extract", methods=["POST"])
+def metadata_extract():
+    # Accept both 'image' or 'file' field names
+    uploaded_file = request.files.get('image') or request.files.get('file')
+    if not uploaded_file:
+        return jsonify({"error": "Image file required (field name 'image' or 'file')"}), 400
+
+    try:
+        # Save temporarily (some EXIF readers require a real file)
+        temp_dir = "temp_uploads"
+        os.makedirs(temp_dir, exist_ok=True)
+        temp_path = os.path.join(temp_dir, uploaded_file.filename)
+        uploaded_file.save(temp_path)
+
+        with open(temp_path, 'rb') as f:
+            tags = exifread.process_file(f, details=False)
+
+        os.remove(temp_path)
+
+        if not tags:
+            return jsonify({"message": "No EXIF metadata found"}), 200
+
+        # Convert tags to a readable dict
+        metadata = {tag: str(value) for tag, value in tags.items()}
+
+        return jsonify({
+            "status": "success",
+            "metadata_count": len(metadata),
+            "metadata": metadata
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Metadata extraction failed: {str(e)}"
+        }), 500
 
 @app.errorhandler(404)
 def not_found(e):

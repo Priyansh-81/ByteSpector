@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ByteSpector - Steganography</title>
-  <link rel="stylesheet" href="../CSS/steganography.css">
+  <link rel="stylesheet" href="../CSS/steganography.css" />
 </head>
 <body>
 
@@ -13,7 +13,7 @@
     <div><strong style="color:#c084fc;">ByteSpector</strong></div>
     <div>
       <a href="../home (1).html">Home</a>
-      <a href="#">About</a>
+      <a href="./about.html">About</a>
     </div>
   </div>
 
@@ -25,12 +25,12 @@
       <h2>Steganography Tools</h2>
       <div class="tool-list">
         <label class="radio-option">
-          <input type="radio" name="stego-option" value="embed" checked>
+          <input type="radio" name="stego-option" value="embed" checked />
           Embed Message
         </label>
 
         <label class="radio-option">
-          <input type="radio" name="stego-option" value="extract">
+          <input type="radio" name="stego-option" value="extract" />
           Extract Message
         </label>
       </div>
@@ -42,17 +42,29 @@
 
       <div class="file-upload">
         <label for="imageInput">Upload Image (PNG/JPG):</label>
-        <input id="imageInput" type="file" accept="image/*">
+        <input id="imageInput" type="file" accept="image/*" />
+        <p id="uploadStatus" class="status">No file selected.</p>
       </div>
 
-      <textarea id="messageBox" placeholder="Enter your secret message here or view extracted message..."></textarea>
+      <!-- Image Preview -->
+      <div class="image-preview">
+        <img id="previewImage" src="" alt="Image preview will appear here" />
+      </div>
+
+      <textarea
+        id="messageBox"
+        placeholder="Enter your secret message here or view extracted message..."
+      ></textarea>
 
       <div class="buttons">
         <button id="startbtn">Start</button>
         <button id="clearBtn" class="danger">Clear</button>
+        <button id="downloadBtn" class="hidden">Download Image</button>
       </div>
-    </div>
 
+      <!-- Loading Spinner -->
+      <div id="loadingSpinner" class="spinner hidden"></div>
+    </div>
   </div>
 
   <script src="../JS/steganography.js"></script>

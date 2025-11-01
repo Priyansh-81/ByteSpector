@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #0A0A0F;
+    color: #ffffff;
+    background-image:
+        radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.35) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(147, 197, 253, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 50% 95%, rgba(147, 197, 253, 0.15) 0%, transparent 50%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+/* === NAVBAR === */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    font-size: 18px;
+    background: rgba(10, 10, 15, 0.35);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    z-index: 200;
+}
+
+.navbar a {
+    color: #ddd;
+    margin-left: 20px;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #fff;
+}
+
+.navbar a::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #c084fc, #60a5fa);
+    transition: width 0.3s ease;
+}
+
+.navbar a:hover::after {
+    width: 100%;
+}
+
+/* === HEADER === */
+h1 {
+    text-align: center;
+    font-size: 120px;
+    font-weight: 800;
+    margin-top: 200px;
+    margin-bottom: 80px;
+    letter-spacing: 6px;
+    background: linear-gradient(90deg, #c084fc, #60a5fa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+        3px 3px 8px rgb(64, 5, 82),
+        0 0 35px rgba(192, 132, 252, 0.5),
+        0 0 100px rgba(147, 197, 253, 0.35);
+    animation: glowPulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes glowPulse {
+  from {
+    text-shadow:
+      3px 3px 8px rgba(0, 0, 0, 0.8),
+      0 0 30px rgba(192, 132, 252, 0.4),
+      0 0 70px rgba(147, 197, 253, 0.2);
+  }
+  to {
+    text-shadow:
+      3px 3px 8px rgba(0, 0, 0, 0.8),
+      0 0 60px rgba(192, 132, 252, 0.7),
+      0 0 130px rgba(147, 197, 253, 0.4);
+  }
+}
+
+/* === CONTENT GRID === */
+.about-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 100px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+    justify-items: center;
+}
+
+/* === ABOUT CARDS === */
+.about-card {
+    width: 90%;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    border-radius: 25px;
+    padding: 40px 45px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    transition: all 0.4s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 25px 80px rgba(128, 90, 213, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.about-card h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #c084fc, #60a5fa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.about-card p,
+.about-card li {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #cfcfe8;
+}
+
+.about-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+/* === RESPONSIVE GRID === */
+@media (max-width: 900px) {
+    .about-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .about-card {
+        width: 100%;
+    }
+}
+
+/* === FOOTER === */
+.footer {
+    text-align: center;
+    padding: 40px 0;
+    font-size: 15px;
+    color: #aaa;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 60px;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1000px) {
+    h1 {
+        font-size: 80px;
+        margin-top: 150px;
+    }
+    .about-card {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 55px;
+        margin-top: 120px;
+    }
+    .about-card {
+        padding: 25px;
+    }
+}
