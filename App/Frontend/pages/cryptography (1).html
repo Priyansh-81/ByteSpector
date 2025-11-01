@@ -5,6 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ByteSpector - Cryptography</title>
   <link rel="stylesheet" href="../CSS/cryptography (1).css">
+  <style>
+    /* Sidebar category styling */
+    .category {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #c084fc;
+      margin: 15px 0 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 0.5px;
+    }
+
+    .tool-list .radio-option {
+      display: block;
+      margin: 6px 0;
+      color: #e5e5e5;
+    }
+
+    .tool-list .radio-option input {
+      margin-right: 8px;
+    }
+
+    /* Centered larger Playfair button */
+    .generate-btn {
+      display: none;
+      background: rgba(192, 132, 252, 0.2);
+      color: #fff;
+      border: 1px solid rgba(192, 132, 252, 0.5);
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: 0.3s ease;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .generate-btn:hover {
+      background: rgba(192, 132, 252, 0.35);
+    }
+
+    /* Popup positioning & styling */
+    .popup {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(30, 30, 40, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: monospace;
+      white-space: pre;
+      text-align: center;
+      backdrop-filter: blur(12px);
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 5px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
@@ -24,46 +101,28 @@
     <div class="sidebar">
       <h2>Cryptography Tools</h2>
       <div class="tool-list">
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="caesar" checked>
-          Caesar Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="multiplicative">
-          Multiplicative Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="affine">
-          Affine Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="Autokey">
-          Autokey Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="vigenere">
-          Vigenere Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="playfair">
-          Playfair Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="hill">
-          Hill Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="b64">
-          Base64 Cipher
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="dsa">
-          DSA
-        </label>
-        <label class="radio-option">
-          <input type="radio" name="crypto-option" value="rsa">
-          RSA
-        </label>
+
+        <h3 class="category">Classical Ciphers</h3>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="playfair" checked> Playfair Cipher</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="multiplicative"> Multiplicative Cipher</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="affine"> Affine Cipher</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="Autokey"> Autokey Cipher</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="vigenere"> Vigenere Cipher</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="ceaser"> Ceaser Cipher</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="hill"> Hill Cipher</label>
+
+        <h3 class="category">Encoding</h3>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="b64"> Base64</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="hex"> Hex</label>
+
+        <h3 class="category">Symmetric Encryption</h3>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="des"> DES</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="aes"> AES-128</label>
+
+        <h3 class="category">Hash Functions</h3>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="sha256"> SHA-256</label>
+        <label class="radio-option"><input type="radio" name="crypto-option" value="md5"> MD-5</label>
+
       </div>
     </div>
 
@@ -76,6 +135,14 @@
 
       <textarea id="key" placeholder="Enter the key..."></textarea>
 
+      <div class="key-container">
+        <button id="generatePlayfairKeyBtn" class="generate-btn">Show Key</button>
+        <div id="popup" class="popup">
+          <button id="closePopupBtn" class="popup-close">✕</button>
+          <div id="popupContent" class="popup-content"></div>
+        </div>
+      </div>
+
       <div class="buttons">
         <button id="encryptBtn">Encrypt</button>
         <button id="decryptBtn">Decrypt</button>
@@ -83,6 +150,73 @@
       </div>
     </div>
   </div>
+
+  <script>
+  const generatePlayfairKeyBtn = document.getElementById("generatePlayfairKeyBtn");
+  const popup = document.getElementById("popup");
+  const popupContent = document.getElementById("popupContent");
+  const closePopupBtn = document.getElementById("closePopupBtn");
+  const keyInput = document.getElementById("key");
+
+  function buildPlayfairMatrix(key) {
+    key = key.toUpperCase().replace(/J/g, "I").replace(/[^A-Z]/g, "");
+    let seen = new Set();
+    let matrixKey = "";
+
+    for (let ch of key) {
+      if (!seen.has(ch)) {
+        seen.add(ch);
+        matrixKey += ch;
+      }
+    }
+
+    const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
+    for (let ch of alphabet) {
+      if (!seen.has(ch)) {
+        seen.add(ch);
+        matrixKey += ch;
+      }
+    }
+
+    let grid = "";
+    for (let i = 0; i < 25; i += 5) {
+      grid += matrixKey.slice(i, i + 5).split("").join(" ") + "\n";
+    }
+    return grid.trim();
+  }
+
+  function showPopup(content) {
+    popupContent.textContent = content;
+    popup.style.display = "flex";
+  }
+
+  generatePlayfairKeyBtn.addEventListener("click", () => {
+    const key = keyInput.value.trim();
+    if (!key) {
+      alert("Please enter a key first!");
+      return;
+    }
+
+    const matrix = buildPlayfairMatrix(key);
+    showPopup(matrix);
+  });
+
+  closePopupBtn.addEventListener("click", () => {
+    popup.style.display = "none";
+  });
+
+  const cipherOptions = document.querySelectorAll('input[name="crypto-option"]');
+  cipherOptions.forEach(option => {
+    option.addEventListener("change", () => {
+      if (option.value === "playfair" && option.checked) {
+        generatePlayfairKeyBtn.style.display = "block";
+      } else {
+        generatePlayfairKeyBtn.style.display = "none";
+        popup.style.display = "none";
+      }
+    });
+  });
+  </script>
 
   <script src="../JS/cryptography.js"></script>
 </body>

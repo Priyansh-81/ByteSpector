@@ -9,9 +9,18 @@ import numpy as np
 from PIL import Image
 from Crypto.Cipher import DES, AES
 from Crypto.Util.Padding import pad, unpad
+from Crypto.PublicKey import RSA, ECC
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Signature import DSS
+from Crypto.Hash import SHA256
+from Crypto.Random import get_random_bytes
+import base64
+from tinyec import registry
 import exifread
 import os
 import binascii
+from Crypto.Util import number
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -111,7 +120,7 @@ def AffineEncrypt():
             result += ch
     return jsonify({"ct": result})
 
-@app.route("/api/symmetric/Affine/crypt", methods=["POST"])
+@app.route("/api/symmetric/Affine/decrypt", methods=["POST"])
 def AffineDecrypt():
     data = request.json
     ct = data.get("ct", "")
@@ -134,49 +143,47 @@ def AffineDecrypt():
             result += ch
     return jsonify({"pt": result})
 
-# Autokey cipher
-@app.route("/api/symmetric/autokeycipher/encrypt", methods=["POST"])
+# Autokey cipher (fixed)
+@app.route("/api/symmetric/Autokey/encrypt", methods=["POST"])
 def AutokeyEncrypt():
     data = request.json
     pt = data.get("pt", "")
-    key = data.get("key", "")
-    if key is None:
-        key = ""
+    key = data.get("key", "") or ""
+
+    pt_letters = [ch for ch in pt if ch.isalpha()]
+
+    keystream = (key.upper() + ''.join(ch.upper() for ch in pt_letters))
+
     result = ""
-    keystream = key.upper()  # will append plaintext to keystream
-    ks_index = 0
+    ks_index = 0  # index into keystream (counts only alpha chars)
     for ch in pt:
         if ch.isalpha():
             shift = 65 if ch.isupper() else 97
             p = ord(ch) - shift
-            if ks_index >= len(keystream):
-                # next keystream char comes from plaintext (uppercased)
-                keystream += ch.upper()
             k = ord(keystream[ks_index]) - 65
             c = (p + k) % 26
             result += chr(c + shift)
             ks_index += 1
         else:
             result += ch
+
     return jsonify({"ct": result})
 
-@app.route("/api/symmetric/autokeycipher/decrypt", methods=["POST"])
+
+@app.route("/api/symmetric/Autokey/decrypt", methods=["POST"])
 def AutokeyDecrypt():
     data = request.json
     ct = data.get("ct", "")
-    key = data.get("key", "")
-    if key is None:
-        key = ""
+    key = data.get("key", "") or ""
+
     result = ""
-    keystream = key.upper()
+    keystream = key.upper()  
     ks_index = 0
+
     for ch in ct:
         if ch.isalpha():
             shift = 65 if ch.isupper() else 97
             c_val = ord(ch) - shift
-            if ks_index >= len(keystream):
-                # shouldn't happen often because we append plaintext as we go
-                keystream += 'A'
             k = ord(keystream[ks_index]) - 65
             p = (c_val - k + 26) % 26
             pch = chr(p + shift)
@@ -185,10 +192,11 @@ def AutokeyDecrypt():
             ks_index += 1
         else:
             result += ch
+
     return jsonify({"pt": result})
 
 # Vigenere
-@app.route("/api/symmetric/vigenere/encrypt", methods=["POST"])
+@app.route("/api/symmetric/Vigenere/encrypt", methods=["POST"])
 def vigenereEncrypt():
     data = request.json
     pt = data.get("pt", "")
@@ -210,7 +218,7 @@ def vigenereEncrypt():
             result += ch
     return jsonify({"ct": result})
 
-@app.route("/api/symmetric/vigenere/decrypt", methods=["POST"])
+@app.route("/api/symmetric/Vigenere/decrypt", methods=["POST"])
 def vigenereDecrypt():
     data = request.json
     ct = data.get("ct", "")
@@ -265,7 +273,7 @@ def _playfair_prepare_text(pt, encrypt=True):
         pairs[-1] += 'X'
     return pairs
 
-@app.route("/api/symmetric/playfair/keygen", methods=["POST"])
+@app.route("/api/symmetric/Playfair/keygen", methods=["POST"])
 def playfairKeyGen():
     data = request.json
     key = data.get("key", "")
@@ -274,7 +282,7 @@ def playfairKeyGen():
     rows = ["".join(r) for r in table]
     return jsonify({"table": rows})
 
-@app.route("/api/symmetric/playfair/encrypt", methods=["POST"])
+@app.route("/api/symmetric/Playfair/encrypt", methods=["POST"])
 def playfairEncrypt():
     data = request.json
     key = data.get("key", "")
@@ -300,7 +308,7 @@ def playfairEncrypt():
             cipher += table[rb][ca]
     return jsonify({"ct": cipher})
 
-@app.route("/api/symmetric/playfair/decrypt", methods=["POST"])
+@app.route("/api/symmetric/Playfair/decrypt", methods=["POST"])
 def playfairDecrypt():
     data = request.json
     key = data.get("key", "")
@@ -325,65 +333,180 @@ def playfairDecrypt():
             plain += table[rb][ca]
     return jsonify({"pt": plain})
 
+
+#Hill cipher
+def char_to_num(ch):
+    return ord(ch.upper()) - 65
+
+def num_to_char(n):
+    return chr((n % 26) + 65)
+
+def mod_inverse(a, m=26):
+    a = a % m
+    for x in range(1, m):
+        if (a * x) % m == 1:
+            return x
+    raise ValueError("No modular inverse")
+
+def matrix_mod_inv_2x2(matrix):
+    det = (matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]) % 26
+    det_inv = mod_inverse(det)
+    inv = [
+        [( matrix[1][1]*det_inv) % 26, (-matrix[0][1]*det_inv) % 26],
+        [(-matrix[1][0]*det_inv) % 26, ( matrix[0][0]*det_inv) % 26]
+    ]
+    return [[x % 26 for x in row] for row in inv]
+
+def multiply_matrix_vector(matrix, vector):
+    result = []
+    for i in range(2):
+        val = (matrix[i][0]*vector[0] + matrix[i][1]*vector[1]) % 26
+        result.append(val)
+    return result
+
+# -----------------------------
+# Hill Cipher Routes
+# -----------------------------
+
+@app.route('/api/symmetric/Hill/encrypt', methods=['POST'])
+def hill_encrypt():
+    data = request.get_json()
+    pt = data.get('pt', '').upper().replace(' ', '')
+    key = data.get('key', [])
+
+    if not key or len(key) != 4:
+        return jsonify({"error": "Key must contain 4 integers (2x2 matrix)."}), 400
+
+    key_matrix = [
+        [int(key[0]), int(key[1])],
+        [int(key[2]), int(key[3])]
+    ]
+
+    if len(pt) % 2 != 0:
+        pt += 'X'  # padding
+
+    ct = ''
+    for i in range(0, len(pt), 2):
+        vec = [char_to_num(pt[i]), char_to_num(pt[i+1])]
+        enc_vec = multiply_matrix_vector(key_matrix, vec)
+        ct += num_to_char(enc_vec[0]) + num_to_char(enc_vec[1])
+
+    return jsonify({"ct": ct})
+
+
+@app.route('/api/symmetric/Hill/decrypt', methods=['POST'])
+def hill_decrypt():
+    data = request.get_json()
+    ct = data.get('ct', '').upper().replace(' ', '')
+    key = data.get('key', [])
+
+    if not key or len(key) != 4:
+        return jsonify({"error": "Key must contain 4 integers (2x2 matrix)."}), 400
+
+    key_matrix = [
+        [int(key[0]), int(key[1])],
+        [int(key[2]), int(key[3])]
+    ]
+
+    try:
+        inv_key = matrix_mod_inv_2x2(key_matrix)
+    except Exception as e:
+        return jsonify({"error": f"Invalid key matrix: {str(e)}"}), 400
+
+    pt = ''
+    for i in range(0, len(ct), 2):
+        vec = [char_to_num(ct[i]), char_to_num(ct[i+1])]
+        dec_vec = multiply_matrix_vector(inv_key, vec)
+        pt += num_to_char(dec_vec[0]) + num_to_char(dec_vec[1])
+
+    return jsonify({"pt": pt})
+
 # Data transformation endpoints
 
 # Base64
-@app.route("/api/transform/base64/encode", methods=["POST"])
+
+@app.route("/api/transform/Base64/encrypt", methods=["POST"])
 def base64_encode():
     data = request.json
-    text = data.get("text", "")
-    return jsonify({"result": base64.b64encode(text.encode()).decode()})
+    # your frontend sends { "pt": "..." }
+    text = data.get("pt", "")
+    if not text:
+        return jsonify({"error": "No input text provided"}), 400
 
-@app.route("/api/transform/base64/decode", methods=["POST"])
+    encoded = base64.b64encode(text.encode()).decode()
+    return jsonify({"ct": encoded})  # returning "ct" to match frontend expectation
+
+
+@app.route("/api/transform/Base64/decrypt", methods=["POST"])
 def base64_decode():
     data = request.json
-    text = data.get("text", "")
+    # your frontend sends { "ct": "..." }
+    text = data.get("ct", "")
+    if not text:
+        return jsonify({"error": "No input text provided"}), 400
+
     try:
-        return jsonify({"result": base64.b64decode(text.encode()).decode()})
+        decoded = base64.b64decode(text.encode()).decode()
+        return jsonify({"pt": decoded})  # returning "pt" to match frontend expectation
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Hex
-@app.route("/api/transform/hex/encode", methods=["POST"])
+#hex
+@app.route("/api/transform/Hex/encrypt", methods=["POST"])
 def hex_encode():
     data = request.json
-    text = data.get("text", "")
-    return jsonify({"result": text.encode().hex()})
+    text = data.get("pt", "")  # frontend sends pt for encrypt
+    if not text:
+        return jsonify({"error": "No input text provided"}), 400
+    encoded = text.encode().hex()
+    return jsonify({"ct": encoded})  # match frontend resultKey
 
-@app.route("/api/transform/hex/decode", methods=["POST"])
+
+@app.route("/api/transform/Hex/decrypt", methods=["POST"])
 def hex_decode():
     data = request.json
-    text = data.get("text", "")
+    text = data.get("ct", "")  # frontend sends ct for decrypt
+    if not text:
+        return jsonify({"error": "No input text provided"}), 400
     try:
-        return jsonify({"result": bytes.fromhex(text).decode()})
+        decoded = bytes.fromhex(text).decode()
+        return jsonify({"pt": decoded})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Hashing
-@app.route("/api/transform/hash/sha256", methods=["POST"])
+@app.route("/api/transform/HashSHA256/encrypt", methods=["POST"])
 def sha256_hash():
     data = request.json
-    text = data.get("text", "")
-    return jsonify({"hash": hashlib.sha256(text.encode()).hexdigest()})
+    text = data.get("pt", "")
+    if not text:
+        return jsonify({"error": "No input text provided"}), 400
+    return jsonify({"ct": hashlib.sha256(text.encode()).hexdigest()})
 
-@app.route("/api/transform/hash/md5", methods=["POST"])
+
+@app.route("/api/transform/HashMD5/encrypt", methods=["POST"])
 def md5_hash():
     data = request.json
-    text = data.get("text", "")
-    return jsonify({"hash": hashlib.md5(text.encode()).hexdigest()})
+    text = data.get("pt", "")
+    if not text:
+        return jsonify({"error": "No input text provided"}), 400
+    return jsonify({"ct": hashlib.md5(text.encode()).hexdigest()})
 
-# XOR (returns base64 to keep binary-safe)
-@app.route("/api/transform/xor", methods=["POST"])
+
+#xor
+@app.route("/api/transform/XOR", methods=["POST"])
 def xor_transform():
     data = request.json
-    text = data.get("text", "")
+    text = data.get("pt", "")
     key = data.get("key", "")
-    if key == "":
-        return jsonify({"error": "Key required"}), 400
+    if not text or not key:
+        return jsonify({"error": "Both text and key are required"}), 400
+
     tx = text.encode()
     kx = key.encode()
-    res = bytes([tx[i] ^ kx[i % len(kx)] for i in range(len(tx))])
-    return jsonify({"result": base64.b64encode(res).decode()})
+    result = bytes([tx[i] ^ kx[i % len(kx)] for i in range(len(tx))])
+    encoded_result = base64.b64encode(result).decode()
+
+    return jsonify({"ct": encoded_result})
 
 # Symmetric block ciphers: DES, AES
 
@@ -393,26 +516,37 @@ def DES_Encrypt():
     data = request.json
     key = data.get("key", "").encode()
     pt = data.get("pt", "")
+    
+    # Check key length
     if len(key) != 8:
         return jsonify({"error": "DES key should be 8 bytes long"}), 400
-    cipher = DES.new(key, DES.MODE_ECB)
-    ct = cipher.encrypt(pad(pt.encode(), DES.block_size))
-    result = base64.b64encode(ct).decode()
-    return jsonify({"ct": result})
+    
+    try:
+        cipher = DES.new(key, DES.MODE_ECB)
+        ct = cipher.encrypt(pad(pt.encode(), DES.block_size))
+        result = base64.b64encode(ct).decode()
+        return jsonify({"ct": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route("/api/symmetric/DES/decrypt", methods=["POST"])
 def DES_Decrypt():
     data = request.json
     key = data.get("key", "").encode()
     ct = data.get("ct", "")
+    
+    # Check key length
     if len(key) != 8:
         return jsonify({"error": "DES key should be 8 bytes long"}), 400
+    
     try:
         ctb = base64.b64decode(ct)
         cipher = DES.new(key, DES.MODE_ECB)
         pt = unpad(cipher.decrypt(ctb), DES.block_size).decode()
         return jsonify({"pt": pt})
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
         return jsonify({"error": str(e)}), 400
 
 # AES (ECB, 128-bit key derived from provided key by padding/truncating)
@@ -421,18 +555,32 @@ def AES_Encrypt():
     data = request.json
     key = data.get("key", "").encode()
     pt = data.get("pt", "")
-    # produce 16 byte key (pad with nulls or truncate)
+
+    if not pt:
+        return jsonify({"error": "Plaintext required"}), 400
+
+    # AES key must be 16, 24, or 32 bytes
     key = (key + b'\0' * 16)[:16]
-    cipher = AES.new(key, AES.MODE_ECB)
-    ct = cipher.encrypt(pad(pt.encode(), AES.block_size))
-    return jsonify({"ct": base64.b64encode(ct).decode()})
+
+    try:
+        cipher = AES.new(key, AES.MODE_ECB)
+        ct = cipher.encrypt(pad(pt.encode(), AES.block_size))
+        return jsonify({"ct": base64.b64encode(ct).decode()})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 @app.route("/api/symmetric/AES/decrypt", methods=["POST"])
 def AES_Decrypt():
     data = request.json
     key = data.get("key", "").encode()
     ct = data.get("ct", "")
+
+    if not ct:
+        return jsonify({"error": "Ciphertext required"}), 400
+
     key = (key + b'\0' * 16)[:16]
+
     try:
         ctb = base64.b64decode(ct)
         cipher = AES.new(key, AES.MODE_ECB)
